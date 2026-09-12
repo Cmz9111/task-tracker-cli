@@ -8,7 +8,7 @@ on:
       - 'v*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -35,3 +35,12 @@ jobs:
           path: target/*.jar
           if-no-files-found: error
           retention-days: 30
+
+      - name: Create Release and upload JAR
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: target/task-cli.jar
